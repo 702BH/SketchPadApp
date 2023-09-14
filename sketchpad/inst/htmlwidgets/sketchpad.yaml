@@ -1,0 +1,9 @@
+dependencies:
+ - name: draw
+   version: 0.1.0
+   src: htmlwidgets/draw
+   script: draw.js
+ - name: sketchpad
+   version: 0.1.0
+   src: htmlwidgets/sketchpad
+   script: sketch.js
