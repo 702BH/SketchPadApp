@@ -8,24 +8,38 @@
 #
 
 library(shiny)
+devtools::load_all("~/GitHub/SketchPadApp/sketchpad")
+
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-  tags$script(src = "sketchpad.js"),
-  uiOutput("canvasOutput")
+  tags$head(tags$script(src = "message-handler.js")),
+  titlePanel("Data Creator"),
+  fluidRow(
+    textInput("student", label = "Type your name", placeholder = "Type your name"),
+    actionButton("advanceBtn", label = "Advance")
+    
+  ),
+  conditionalPanel(
+    condition = "input.student == ",
+    sketchpadOutput("test"))
+  
 
 )
 
 # Define server logic required to draw a histogram
-server <- function(input, output) {
-  output$canvasOutput <- renderUI({
-    tags$canvas(id = "canavs", width = 400, height = 400)
+server <- function(input, output, session) {
+  output$test <- renderSketchpad({
+    sketchpad("test")
+  })
+  
+  observeEvent(input$advanceBtn, {
+    session$sendCustomMessage(type = 'testmessage',
+                              message = input$student)
   })
   
   
-  observeEvent(input$canvas_draw, {
-    print(input$canvas_draw)
-  })
+
 }
 
 # Run the application 
