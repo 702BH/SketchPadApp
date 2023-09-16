@@ -5,6 +5,12 @@
 #' @import htmlwidgets
 #'
 #' @export
+sketchpad_html <- function(..., style){
+  htmltools::tags$div(..., style = c(style, "visibility: hidden;"))
+}
+
+
+
 sketchpad <- function(message, width = NULL, height = NULL, elementId = NULL) {
 
   # forward options using x
