@@ -10,8 +10,7 @@
 library(shiny)
 devtools::load_all("~/GitHub/SketchPadApp/sketchpad")
 
-labels <- c("car", "fish", "house", "tree", "bicycle",
-            "guitar", "pencil", "clock")
+
 
 
 # Define UI for application that draws a histogram
@@ -20,6 +19,7 @@ ui <- fluidPage(
   titlePanel("Data Creator"),
   fluidRow(
     textInput("student", label = "", placeholder = "Type your name"),
+    textOutput("instructions"),
     actionButton("advanceBtn", label = "Advance")
     
   ),
@@ -41,6 +41,7 @@ server <- function(input, output, session) {
     session$sendCustomMessage(type = 'testmessage',
                               message = list(name = input$student,
                                              item = sample(labels, 1)))
+
   })
   
   sketch_info <- reactive({
@@ -52,6 +53,16 @@ server <- function(input, output, session) {
   observe({
     print(sketch_info())
   })
+  
+  labels <- c("car", "fish", "house", "tree", "bicycle",
+              "guitar", "pencil", "clock")
+  
+  index <- 1
+  
+  output$instructions <- renderText({
+    paste0("Please draw a ",labels[index] )
+  })
+  
 
 }
 
