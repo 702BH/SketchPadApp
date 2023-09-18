@@ -15,7 +15,8 @@ devtools::load_all("~/GitHub/SketchPadApp/sketchpad")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-  tags$head(tags$script(src = "message-handler.js")),
+  tags$head(tags$script(src = "message-handler.js"),
+            tags$script(src ="message.js")),
   titlePanel("Data Creator"),
   fluidRow(
     textInput("student", label = "", placeholder = "Type your name"),
@@ -62,15 +63,18 @@ server <- function(input, output, session) {
   })
   
   sketch_data <- reactive({
-    req(input$sketchData)
-    list(data = input$sketchData)
+    list(
+      label = labels[index_r()],
+      data = input$sketchData
+    )
+    
   })
   
-  observe({
-    req(input$sketchData)
-    #print(sketch_info())
-    print(sketch_data())
-  })
+  # observe({
+  #   req(input$sketchData)
+  #   #print(sketch_info())
+  #   print(sketch_data())
+  # })
   
   labels <- c("car", "fish", "house", "tree", "bicycle",
               "guitar", "pencil", "clock")
@@ -81,11 +85,13 @@ server <- function(input, output, session) {
   observeEvent(input$nextBtn, {
     new_index_r <- index_r() + 1
     if(new_index_r <= length(labels)){
+      #session$sendCustomMessage(type = 'resetCanvas', message = "")
       index_r(new_index_r)
       
       output$instructions <- renderText({
         paste0("please draw a ", labels[index_r()])
       })
+      print(sketch_data())
       
     }else{
       session$sendCustomMessage(type = 'nextbutton', message = "")

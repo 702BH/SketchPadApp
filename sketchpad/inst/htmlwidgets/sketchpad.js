@@ -13,9 +13,10 @@ HTMLWidgets.widget({
       renderValue: function(x) {
 
         // TODO: code to render the widget, e.g.
-        var sketchpad = new sketchPad(el)
+        sketchpad = new sketchPad(el);
 
       },
+
 
       resize: function(width, height) {
 

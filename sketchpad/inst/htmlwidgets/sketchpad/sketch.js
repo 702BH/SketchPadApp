@@ -20,13 +20,16 @@ class sketchPad{
 
 
       this.ctx=this.canvas.getContext("2d");
+      this.reset();
+
+
+      this.#addEventListeners();
+    }
+
+    reset(){
       this.paths=[];
       this.isDrawing=false;
       this.#redraw();
-
-      this.#addEventListeners();
-
-
 
     }
 
@@ -36,6 +39,8 @@ class sketchPad{
 
         const mouse=this.#getMouse(evt);
         this.paths.push([mouse]);
+        
+        
         this.isDrawing=true;
 
 
@@ -46,6 +51,8 @@ class sketchPad{
           const lastPath=this.paths[this.paths.length-1];
           lastPath.push(mouse);
           this.#redraw();
+          this.pathsJson = JSON.stringify(this.paths);
+          Shiny.setInputValue("sketchData", this.pathsJson);
 
         }
 
@@ -94,4 +101,8 @@ class sketchPad{
 
 
 
+
+
   }
+
+

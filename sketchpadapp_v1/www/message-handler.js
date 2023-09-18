@@ -17,6 +17,13 @@ Shiny.addCustomMessageHandler("nextbutton",
 function(message){
   document.getElementById("nextBtn").disabled=true;
   document.getElementById("saveBtn").disabled=false;
+  Shiny.onInputChange("sketchData", sketchpad.paths);
 
 
 })
+
+Shiny.addCustomMessageHandler("resetCanvas", 
+function(message){
+  var el = document.getElementById('test');
+  el.contentWindow.sketchPad.reset();
+});
