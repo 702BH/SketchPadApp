@@ -3,17 +3,20 @@
 Shiny.addCustomMessageHandler("testmessage",
 function(message){
   console.log(message.name);
-  if(document.getElementById("advanceBtn").innerHTML == "Advance"){
-    if(message.name == ""){
-      alert(JSON.stringify("Please type your name first"));
-    }else{
-      document.getElementById("sketchrow").style.visibility = "visible";
-      document.getElementById("student").style.visibility = "hidden";
-      document.getElementById("advanceBtn").innerHTML="NEXT";
-    }
-
+  if(message.name == ""){
+    alert(JSON.stringify("Please type your name first"));
+  }else{
+    document.getElementById("sketchrow").style.visibility = "visible";
+    document.getElementById("student").style.visibility = "hidden";
+    document.getElementById("advanceBtn").disabled=true;
+    document.getElementById("nextBtn").disabled=false;
   }
-
-  
-    
 });
+
+Shiny.addCustomMessageHandler("nextbutton",
+function(message){
+  document.getElementById("nextBtn").disabled=true;
+  document.getElementById("saveBtn").disabled=false;
+
+
+})

@@ -20,7 +20,12 @@ ui <- fluidPage(
   fluidRow(
     textInput("student", label = "", placeholder = "Type your name"),
     textOutput("instructions"),
-    actionButton("advanceBtn", label = "Advance")
+    fluidRow(
+      actionButton("advanceBtn", label = "Advance"),
+      actionButton("nextBtn", label = "Next", disabled = "true"),
+      actionButton("saveBtn", label = "Save", disabled = "true")
+    ),
+    
     
   ),
   fluidRow(id = "sketchrow", style = "visibility: hidden",
@@ -41,6 +46,12 @@ server <- function(input, output, session) {
     session$sendCustomMessage(type = 'testmessage',
                               message = list(name = input$student,
                                              item = sample(labels, 1)))
+    
+    new_index_r <- index_r() + 1
+    index_r(new_index_r)
+    output$instructions <- renderText({
+      paste0("please draw a ", labels[index_r()])
+    })
 
   })
   
@@ -50,17 +61,40 @@ server <- function(input, output, session) {
     )
   })
   
+  sketch_data <- reactive({
+    req(input$sketchData)
+    list(data = input$sketchData)
+  })
+  
   observe({
-    print(sketch_info())
+    req(input$sketchData)
+    #print(sketch_info())
+    print(sketch_data())
   })
   
   labels <- c("car", "fish", "house", "tree", "bicycle",
               "guitar", "pencil", "clock")
   
-  index <- 1
   
-  output$instructions <- renderText({
-    paste0("Please draw a ",labels[index] )
+  index_r <- reactiveVal(0)
+  
+  observeEvent(input$nextBtn, {
+    new_index_r <- index_r() + 1
+    if(new_index_r <= length(labels)){
+      index_r(new_index_r)
+      
+      output$instructions <- renderText({
+        paste0("please draw a ", labels[index_r()])
+      })
+      
+    }else{
+      session$sendCustomMessage(type = 'nextbutton', message = "")
+      output$instructions <- renderText({
+        paste0("please save your drawings")
+      })
+      
+    }
+    
   })
   
 
