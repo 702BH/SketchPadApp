@@ -8,12 +8,24 @@ HTMLWidgets.widget({
 
     // TODO: define shared variables for this instance
 
+    sketchpad = new sketchPad(el);
+
+    function callMethod(methodName){
+      if(methodName == "reset"){
+        sketchpad.reset();
+      }
+    }
+
+    Shiny.addCustomMessageHandler("callMethod", callMethod);
+
+
     return {
 
       renderValue: function(x) {
 
         // TODO: code to render the widget, e.g.
-        sketchpad = new sketchPad(el);
+        sketchpad;
+
 
       },
 

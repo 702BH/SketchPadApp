@@ -51,8 +51,6 @@ class sketchPad{
           const lastPath=this.paths[this.paths.length-1];
           lastPath.push(mouse);
           this.#redraw();
-          this.pathsJson = JSON.stringify(this.paths);
-          Shiny.setInputValue("sketchData", this.pathsJson);
 
         }
 
@@ -84,6 +82,8 @@ class sketchPad{
     #redraw(){
       this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height);
       draw.paths(this.ctx, this.paths);
+      this.pathsJson = JSON.stringify(this.paths);
+      Shiny.setInputValue("sketchData", this.pathsJson);
       if(this.paths.length>0){
         this.undoBtn.disabled=false;
       }else{

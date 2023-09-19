@@ -24,7 +24,7 @@ ui <- fluidPage(
     fluidRow(
       actionButton("advanceBtn", label = "Advance"),
       actionButton("nextBtn", label = "Next", disabled = "true"),
-      actionButton("saveBtn", label = "Save", disabled = "true")
+      downloadButton("saveBtn", label = "Save", disabled = "true")
     ),
     
     
@@ -48,11 +48,15 @@ server <- function(input, output, session) {
                               message = list(name = input$student,
                                              item = sample(labels, 1)))
     
-    new_index_r <- index_r() + 1
-    index_r(new_index_r)
-    output$instructions <- renderText({
-      paste0("please draw a ", labels[index_r()])
-    })
+    if(!input$student == ""){
+      new_index_r <- index_r() + 1
+      index_r(new_index_r)
+      output$instructions <- renderText({
+        paste0("please draw a ", labels[index_r()])
+      })
+      
+    }
+    
 
   })
   
@@ -62,13 +66,16 @@ server <- function(input, output, session) {
     )
   })
   
-  sketch_data <- reactive({
-    list(
-      label = labels[index_r()],
-      data = input$sketchData
-    )
-    
-  })
+  # sketch_data <- reactive({
+  #   list(
+  #     label = labels[index_r()],
+  #     data = input$sketchData
+  #   )
+  #   
+  # })
+  
+  sketch_list <- reactiveValues(data = list())
+  parsed_data <- NULL
   
   # observe({
   #   req(input$sketchData)
@@ -85,13 +92,23 @@ server <- function(input, output, session) {
   observeEvent(input$nextBtn, {
     new_index_r <- index_r() + 1
     if(new_index_r <= length(labels)){
-      #session$sendCustomMessage(type = 'resetCanvas', message = "")
+      
+      label = labels[index_r()]
+      
+      sketch_list$data[[label]] <-  input$sketchData
+      
+      #parsed_data <- jsonlite::toJSON(sketch_list$data)
+      
+      session$sendCustomMessage(type = 'callMethod', "reset")
       index_r(new_index_r)
       
       output$instructions <- renderText({
         paste0("please draw a ", labels[index_r()])
       })
-      print(sketch_data())
+      #print(sketch_data())
+      
+      
+      print(sketch_list$data)
       
     }else{
       session$sendCustomMessage(type = 'nextbutton', message = "")
@@ -102,6 +119,15 @@ server <- function(input, output, session) {
     }
     
   })
+  
+  output$saveBtn <- downloadHandler(
+    filename = function(){
+      paste0(input$student, ".json")
+    },
+    content = function(file){
+      jsonlite::write_json(sketch_list$data, file)
+    }
+  )
   
 
 }

@@ -16,10 +16,7 @@ function(message){
 Shiny.addCustomMessageHandler("nextbutton",
 function(message){
   document.getElementById("nextBtn").disabled=true;
-  document.getElementById("saveBtn").disabled=false;
-  Shiny.onInputChange("sketchData", sketchpad.paths);
-
-
+  document.getElementById("saveBtn").removeAttribute("disabled");
 })
 
 Shiny.addCustomMessageHandler("resetCanvas", 
