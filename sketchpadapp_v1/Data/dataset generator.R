@@ -235,3 +235,11 @@ for(json_file in json_files_s){
 output_json <- toJSON(combined_data, auto_unbox = TRUE)
 
 writeLines(paste("const samples = ", output_json, ";"), output_folder)
+
+
+
+# saving as CSV
+combined_df <- do.call(rbind, combined_data)
+
+write.csv(combined_df, "samples.csv", row.names = FALSE)
+
