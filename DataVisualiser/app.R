@@ -8,8 +8,9 @@
 #
 
 library(shiny)
+library(tidyverse)
 
-csv_file <- "www/samples.csv"
+csv_file <- "www/features.csv"
 
 df <- read.csv(csv_file)
 
@@ -17,8 +18,14 @@ df <- read.csv(csv_file)
 # Define UI for application that draws a histogram
 ui <- fluidPage(
   titlePanel("Student Drawings"),
-  selectInput("student", "Select a Student:", choices = unique(df$student)),
-  uiOutput("image_container")
+  sidebarPanel(
+    selectInput("student", "Select a Student:", choices = unique(df$s_name)),
+    uiOutput("image_container")
+  ),
+  mainPanel(
+    plotOutput("scatter")
+  )
+  
 )
 
 # Define server logic required to draw a histogram
@@ -28,7 +35,7 @@ server <- function(input, output) {
     
     selected_student <- input$student
     
-    filtered_df <- df[df$student == selected_student, ]
+    filtered_df <- df[df$s_name == selected_student, ]
     
     image_tags <- list()
     
@@ -46,6 +53,11 @@ server <- function(input, output) {
     }
     do.call(tagList, image_tags)
     
+  })
+  
+  output$scatter <- renderPlot({
+    ggplot(df, aes(x = path_count, y = point_count)) +
+      geom_point()
   })
   
 }
